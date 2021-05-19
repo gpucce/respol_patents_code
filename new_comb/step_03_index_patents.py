@@ -24,7 +24,7 @@ Measures"
 
 """
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # Input files from new_word measure
 uni_file = data_dir+'new_word/keywords.txt'
 voc_file = data_dir+'new_word/keywords_vocabulary.txt'

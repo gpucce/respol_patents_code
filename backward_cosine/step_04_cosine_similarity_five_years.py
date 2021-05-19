@@ -122,11 +122,11 @@ def comp_sim(slice_start, slice_end, block_a, block_p, block_f):
     return sim_p, sim_f
 
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # Input common files
 ayear_file = data_dir+'patent_ayear.txt'
 # Output file for backward_cosine measure
-idx_file = data_dir+'backward_cosine/keywords_all_idx.txt'
+idx_file = data_dir+'backward_cosine/keywords_idx.txt'
 
 # Reading patent data
 print('Reading patent unigrams and patent numbers...')

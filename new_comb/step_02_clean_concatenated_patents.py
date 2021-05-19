@@ -55,8 +55,8 @@ def checkRoman(token):
     return False
 
 
-aux_dir = 'E:/data/2019_patent_novelty_aux_files/' # Original data
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+aux_dir = '../data/aux_files/' # Original data
+data_dir = '../data/output/' # Processed data
 greek_file = aux_dir+'greek.txt'
 symbol_file = aux_dir+'symbols.txt'
 stop_file = aux_dir+'additional_stopwords.txt'

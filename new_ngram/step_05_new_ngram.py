@@ -47,9 +47,9 @@ def read_file(file):
     return content
 
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # n-gram size (2 or 3)
-n = 2
+n = 3
 # Input common file
 ayear_file = data_dir+'patent_ayear.txt'
 # Input files from new_ngram measure

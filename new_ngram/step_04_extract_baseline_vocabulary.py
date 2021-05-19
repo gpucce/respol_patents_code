@@ -23,7 +23,7 @@ Measures"
 
 """
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # n-gram size (2 or 3)
 n = 3
 # Input common file

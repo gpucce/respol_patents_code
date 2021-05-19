@@ -35,16 +35,16 @@ import math as mt
 import re
 
 
-data_dir = 'E:/data/2019_patent_novelty_aux_files/'  # Original data directory
-out_dir = 'E:/data/2020_research_policy_replicate_results/'  # Output directory
+data_dir = '../data/input/C23C2A63F3/'  # Original data directory
+out_dir = '../data/output/'  # Output directory
 # Input files
-claims_file = data_dir+'claim_full_till2018.csv'
-title_abstract_file = data_dir+'patent_title_abstract_till_2018.csv'
+claims_file = data_dir + 'C23C2A63F3_claims.csv'
+title_abstract_file = data_dir + 'C23C2A63F3_title_abstract.csv'
 # Output files
-pno_file = out_dir+'patent_number.txt'
-concat_file = out_dir+'patent_concatenated.txt'
-adate_file = out_dir+'patent_adate.txt'
-ayear_file = out_dir+'patent_ayear.txt'
+pno_file = out_dir + 'patent_number.txt'
+concat_file = out_dir + 'patent_concatenated.txt'
+adate_file = out_dir + 'patent_adate.txt'
+ayear_file = out_dir + 'patent_ayear.txt'
 
 print('Reading claims from CSV...')
 claims_data = pd.read_csv(claims_file)

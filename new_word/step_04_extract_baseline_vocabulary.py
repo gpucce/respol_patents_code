@@ -21,7 +21,7 @@ Measures"
 
 """
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # Input common file
 ayear_file = data_dir+'patent_ayear.txt'
 # Input file from new_word measure

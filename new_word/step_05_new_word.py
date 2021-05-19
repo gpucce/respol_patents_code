@@ -47,7 +47,7 @@ def read_file(file):
     return content
 
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # Input common files
 ayear_file = data_dir+'patent_ayear.txt'
 # Input files from new_word measure
@@ -84,6 +84,7 @@ with open(ayear_file, 'r', encoding='utf-8') as ayear_reader,\
         i += 1
         if i % 100000 == 0:
             print('\t '+str(i)+' patents processed')
+print(f"number of new words {len(new_word)}")
 print('New words found!')
 
 print('Reading whole vocabulary...')

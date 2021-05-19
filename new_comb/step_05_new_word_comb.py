@@ -25,7 +25,7 @@ Measures"
 import itertools as it
 
 
-data_dir = 'E:/data/2020_research_policy_replicate_results/' # Processed data
+data_dir = '../data/output/' # Processed data
 # Size of word combination (2 or 3)
 n = 2
 # Input common file
