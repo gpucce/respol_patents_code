@@ -35,11 +35,11 @@ import math as mt
 import re
 
 
-data_dir = '../data/input/C23C2A63F3/'  # Original data directory
+data_dir = '../data/input/'  # Original data directory
 out_dir = '../data/output/'  # Output directory
 # Input files
-claims_file = data_dir + 'C23C2A63F3_claims.csv'
-title_abstract_file = data_dir + 'C23C2A63F3_title_abstract.csv'
+claims_file = data_dir + 'claims.csv'
+title_abstract_file = data_dir + 'title_abstract.csv'
 # Output files
 pno_file = out_dir + 'patent_number.txt'
 concat_file = out_dir + 'patent_concatenated.txt'

@@ -1,6 +1,7 @@
 # %%
 import pandas as pd
 import os
+import os.path as osp
 import re
 from tqdm import tqdm
 
@@ -10,9 +11,10 @@ def read_patent(patent_path):
         patent = patent_file.read().replace("\n", "").lower()
     return patent 
 
-def split_patent(patent_path, fields=["claims", "title", "abstract", "filing_date", "priority_date", "docdb_family_id"]):
+def split_patent(patent_path, fields=["claims", "title", "abstract", "filing_date", "priority_date", "docdb_family_id"], id=1):
     patent = read_patent(patent_path)
-    chunks = {}
+    patent_name = osp.splitext(osp.basename(patent_path))[0]
+    chunks = {"local_id":id, "global_id":patent_name}
     for part in fields:
         try:
             chunks[part] = re.search(f"(?<=<{part}>)(.*)(?=</{part}>)", patent).group(0)
@@ -41,16 +43,27 @@ for dir in patents_folders:
 split_patent(all_patents[0]).keys()
 
 # %%
-all_parsed_patents = list(filter(lambda x: len(x) == 6, [split_patent(i) for i in tqdm(all_patents)]))
+all_parsed_patents = [split_patent(i, idx) for idx,i in tqdm(enumerate(all_patents))]
 
 # %%
-future_claims_df = {"patent":[i["docdb_family_id"] for i in all_parsed_patents],"claim":[i["claims"] for i in all_parsed_patents]}
+future_claims_df = {
+    "patent":[i["docdb_family_id"] for i in all_parsed_patents],
+    "claim":[i["claims"] for i in all_parsed_patents],
+    "docdb_family_id":[i["docdb_family_id"] for i in all_parsed_patents]
+    }
+
+future_local_global_id = {
+    "local_id":[i["local_id"] for i in all_parsed_patents],
+    "global_id":[i["global_id"] for i in all_parsed_patents]
+    }
+
 future_title_abstract_df = dict()
 for i in [i for i in fields if i != "claims"]:
     future_title_abstract_df[i] = [j[i] for j in all_parsed_patents]
 
 # %%
-pd.DataFrame(future_title_abstract_df).to_csv("../data/input/title_abstract.csv")
-pd.DataFrame(future_claims_df).to_csv("../data/input/claims.csv")
+pd.DataFrame(future_title_abstract_df).to_csv("../data/input/title_abstract.csv", index=False)
+pd.DataFrame(future_claims_df).to_csv("../data/input/claims.csv", index=False)
+pd.DataFrame(future_claims_df).to_csv("../data/input/patent_ids.csv", index=False)
 
 # %%
