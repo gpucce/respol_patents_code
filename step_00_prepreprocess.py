@@ -3,6 +3,8 @@ import pandas as pd
 import os
 import os.path as osp
 import re
+import numpy as np
+from pandas._libs.missing import NA
 from tqdm import tqdm
 
 # %%
@@ -11,7 +13,7 @@ def read_patent(patent_path):
         patent = patent_file.read().replace("\n", "").lower()
     return patent 
 
-def split_patent(patent_path, fields=["claims", "title", "abstract", "filing_date", "priority_date", "docdb_family_id"], id=1):
+def split_patent(patent_path, id=1, fields=["claims", "title", "abstract", "filing_date", "priority_date", "docdb_family_id"]):
     patent = read_patent(patent_path)
     patent_name = osp.splitext(osp.basename(patent_path))[0]
     chunks = {"local_id":id, "global_id":patent_name}
@@ -19,7 +21,7 @@ def split_patent(patent_path, fields=["claims", "title", "abstract", "filing_dat
         try:
             chunks[part] = re.search(f"(?<=<{part}>)(.*)(?=</{part}>)", patent).group(0)
         except:
-            continue
+            chunks[part] = np.nan
         
     return chunks
 
@@ -39,8 +41,6 @@ for dir in patents_folders:
     all_patents += [dir + "/" + i for i in os.listdir(dir)]
 
 
-# %%
-split_patent(all_patents[0]).keys()
 
 # %%
 all_parsed_patents = [split_patent(i, idx) for idx,i in tqdm(enumerate(all_patents))]
