@@ -33,13 +33,14 @@ Measures"
 import pandas as pd
 import math as mt
 import re
+from tqdm.auto import tqdm
 
 
 data_dir = '../data/input/'  # Original data directory
 out_dir = '../data/output/'  # Output directory
 # Input files
-claims_file = data_dir + 'claims.csv'
-title_abstract_file = data_dir + 'title_abstract.csv'
+claims_file = data_dir + 'claims_test.csv'
+title_abstract_file = data_dir + 'title_abstract_test.csv'
 # Output files
 pno_file = out_dir + 'patent_number.txt'
 concat_file = out_dir + 'patent_concatenated.txt'
@@ -48,17 +49,19 @@ ayear_file = out_dir + 'patent_ayear.txt'
 
 print('Reading claims from CSV...')
 claims_data = pd.read_csv(claims_file)
-claims_data['claim_txt'] = claims_data['claim_txt'].astype(str)
+claims_data['claim'] = claims_data['claim'].astype(str)
 print('Claims read!')
 
 d_text = {}
 
 print('Concatenating claims from CSV...')
 i = 0
+claims_progress_bar = tqdm(range(claims_data.shape[0]))
+
 for row in claims_data.itertuples():
     line = ''
-    if row.claim_txt != 'nan':
-        tokens = row.claim_txt.split()
+    if row.claim != 'nan':
+        tokens = row.claim.split()
         first = tokens[0]
         if re.match('\'?.?[0-9]+.?', first) or re.match(';?[a-z].', first):
             tokens = tokens[1:]
@@ -69,16 +72,21 @@ for row in claims_data.itertuples():
     i += 1
     if i % 1000000 == 0:
         print('\t '+str(i)+' patents processed')
+    claims_progress_bar.update(1)
 print('Claims concatenated!')
 
 print('Reading title and abstract from CSV...')
 title_data = pd.read_csv(title_abstract_file)
 title_data['filing_date'] = title_data['filing_date'].astype(str)
-title_data['grant_date'] = title_data['grant_date'].astype(str)
+
+### used to be grant
+title_data['priority_date'] = title_data['priority_date'].astype(str)
 title_data['abstract'] = title_data['abstract'].astype(str)
 title_data['title'] = title_data['title'].astype(str)
 print('Title and abstract read!')
 
+
+title_abstract_progress_bar = tqdm(range(title_data.shape[0]))
 
 print('Concatenating title and abstract...')
 i = 0
@@ -94,14 +102,18 @@ for row in title_data.itertuples():
     if row.patent in d_text:
         line += ' '+d_text[row.patent]
     d_text[row.patent] = line
-    adates[row.patent] = row.adate
-    ayears[row.patent] = row.ayear
+    ### right side used to be row.adate
+    adates[row.patent] = row.filing_date
+
+    ### right side used to be row.ayear
+    ayears[row.patent] = row.filing_year
     # Form a tuple with adate, patent number and ayear to sort the patents
     # first by adate and then by patent number
     l_tuples.append((row.adate, row.patent, row.ayear))
     i += 1
     if i % 1000000 == 0:
         print('\t '+str(i)+' patents processed')
+    title_abstract_progress_bar.update(1)
 print('Title and abstract concatenated!')
 
 l_tuples.sort()

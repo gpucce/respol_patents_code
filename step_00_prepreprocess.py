@@ -5,7 +5,7 @@ import os.path as osp
 import re
 import numpy as np
 from pandas._libs.missing import NA
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 # %%
 def read_patent(patent_path):
@@ -36,6 +36,8 @@ patents_folders = [
 fields = ["claims", "title", "abstract", "filing_date", "priority_date", "docdb_family_id"]
 
 # %%
+
+
 all_patents = []
 for dir in patents_folders:
     all_patents += [dir + "/" + i for i in os.listdir(dir)]
@@ -43,12 +45,16 @@ for dir in patents_folders:
 
 
 # %%
-all_parsed_patents = [split_patent(i, idx) for idx,i in tqdm(enumerate(all_patents))]
+progressbar = tqdm(range(len(all_patents)))
+all_parsed_patents = []
+for idx, i in enumerate(all_patents):
+    all_parsed_patents.append(split_patent(i, idx))
+    progressbar.update(1)
 
 # %%
 future_claims_df = {
-    "patent":[i["docdb_family_id"] for i in all_parsed_patents],
-    "claim":[i["claims"] for i in all_parsed_patents],
+    "patent":[i["global_id"] for i in all_parsed_patents],
+    "claim_txt":[i["claims"] for i in all_parsed_patents],
     "docdb_family_id":[i["docdb_family_id"] for i in all_parsed_patents]
     }
 
@@ -58,8 +64,8 @@ future_local_global_id = {
     }
 
 future_title_abstract_df = dict()
-for i in [i for i in fields if i != "claims"]:
-    future_title_abstract_df[i] = [j[i] for j in all_parsed_patents]
+for i in [i for i in fields if i != "claims"] + ["global_id"]:
+    future_title_abstract_df[i] = [j[i] for j in all_parsed_patents]    
 
 # %%
 pd.DataFrame(future_title_abstract_df).to_csv("../data/input/title_abstract.csv", index=False)
