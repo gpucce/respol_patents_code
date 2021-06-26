@@ -28,6 +28,7 @@ from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
 import operator
 import re
+from tqdm.auto import tqdm
 
 
 def checkRoman(token):
@@ -100,6 +101,8 @@ stemmer = SnowballStemmer('english')
 
 print('Cleaning patents...')
 # This process could take several hours, depending on the computer
+cleaning_progressbar = tqdm(range(493110))
+
 i = 0
 clean_patents = []
 with open(concat_file, 'r', encoding='utf-8') as concat_reader:
@@ -130,6 +133,7 @@ with open(concat_file, 'r', encoding='utf-8') as concat_reader:
         tokens.sort()
         clean_patents.append(tokens)
         i += 1
+        cleaning_progressbar.update(1)
         if i % 100000 == 0:
             print('\t '+str(i)+' patents processed')
 print('Patents cleaned!')

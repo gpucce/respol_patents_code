@@ -54,22 +54,25 @@ for idx, i in enumerate(all_patents):
 # %%
 future_claims_df = {
     "patent":[i["global_id"] for i in all_parsed_patents],
-    "claim_txt":[i["claims"] for i in all_parsed_patents],
+    "claim":[i["claims"] for i in all_parsed_patents],
     "docdb_family_id":[i["docdb_family_id"] for i in all_parsed_patents]
     }
 
 future_local_global_id = {
     "local_id":[i["local_id"] for i in all_parsed_patents],
-    "global_id":[i["global_id"] for i in all_parsed_patents]
+    "patent":[i["global_id"] for i in all_parsed_patents]
     }
 
 future_title_abstract_df = dict()
 for i in [i for i in fields if i != "claims"] + ["global_id"]:
+    if i == "global_id":
+        future_title_abstract_df["patent"] = [j[i] for j in all_parsed_patents]
+        continue    
     future_title_abstract_df[i] = [j[i] for j in all_parsed_patents]    
 
 # %%
-pd.DataFrame(future_title_abstract_df).to_csv("../data/input/title_abstract.csv", index=False)
-pd.DataFrame(future_claims_df).to_csv("../data/input/claims.csv", index=False)
-pd.DataFrame(future_claims_df).to_csv("../data/input/patent_ids.csv", index=False)
+pd.DataFrame(future_title_abstract_df).to_csv("../data/input/title_abstract.csv", sep="\t", index=False)
+pd.DataFrame(future_claims_df).to_csv("../data/input/claims.csv", sep="\t", index=False)
+pd.DataFrame(future_claims_df).to_csv("../data/input/patent_ids.csv", sep="\t", index=False)
 
 # %%

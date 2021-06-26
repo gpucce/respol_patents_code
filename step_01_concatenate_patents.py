@@ -39,8 +39,8 @@ from tqdm.auto import tqdm
 data_dir = '../data/input/'  # Original data directory
 out_dir = '../data/output/'  # Output directory
 # Input files
-claims_file = data_dir + 'claims_test.csv'
-title_abstract_file = data_dir + 'title_abstract_test.csv'
+claims_file = data_dir + 'claims.csv'
+title_abstract_file = data_dir + 'title_abstract.csv'
 # Output files
 pno_file = out_dir + 'patent_number.txt'
 concat_file = out_dir + 'patent_concatenated.txt'
@@ -48,7 +48,7 @@ adate_file = out_dir + 'patent_adate.txt'
 ayear_file = out_dir + 'patent_ayear.txt'
 
 print('Reading claims from CSV...')
-claims_data = pd.read_csv(claims_file)
+claims_data = pd.read_csv(claims_file, sep="\t")
 claims_data['claim'] = claims_data['claim'].astype(str)
 print('Claims read!')
 
@@ -76,7 +76,7 @@ for row in claims_data.itertuples():
 print('Claims concatenated!')
 
 print('Reading title and abstract from CSV...')
-title_data = pd.read_csv(title_abstract_file)
+title_data = pd.read_csv(title_abstract_file, sep="\t")
 title_data['filing_date'] = title_data['filing_date'].astype(str)
 
 ### used to be grant
@@ -85,6 +85,12 @@ title_data['abstract'] = title_data['abstract'].astype(str)
 title_data['title'] = title_data['title'].astype(str)
 print('Title and abstract read!')
 
+def reverse_date(date):
+    try:
+        return int(date[-2:]+date[-5:-3]+date[:4])
+    except:
+        print('broken date')
+        return mt.nan
 
 title_abstract_progress_bar = tqdm(range(title_data.shape[0]))
 
@@ -102,14 +108,16 @@ for row in title_data.itertuples():
     if row.patent in d_text:
         line += ' '+d_text[row.patent]
     d_text[row.patent] = line
+
     ### right side used to be row.adate
-    adates[row.patent] = row.filing_date
+    adates[row.patent] = reverse_date(row.filing_date)
 
     ### right side used to be row.ayear
-    ayears[row.patent] = row.filing_year
+    ayears[row.patent] = int(row.filing_year)
+
     # Form a tuple with adate, patent number and ayear to sort the patents
     # first by adate and then by patent number
-    l_tuples.append((row.adate, row.patent, row.ayear))
+    l_tuples.append((row.filing_date, row.patent, row.filing_year))
     i += 1
     if i % 1000000 == 0:
         print('\t '+str(i)+' patents processed')

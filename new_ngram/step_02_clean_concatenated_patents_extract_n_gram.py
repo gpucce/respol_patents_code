@@ -31,6 +31,7 @@ from nltk.corpus import stopwords
 from nltk.util import ngrams
 import operator
 import re
+from tqdm.auto import tqdm
 
 
 def checkRoman(token):
@@ -114,6 +115,7 @@ d_ngrams = {}
 
 print('Extracting '+str(n)+'-grams from patents...')
 # This process could take several hours, depending on the computer
+cleaning_progressbar = tqdm(range(493110))
 clean_patents = []
 i = 0
 with open(concat_file, 'r', encoding='utf-8') as concat_reader:
@@ -164,6 +166,7 @@ with open(concat_file, 'r', encoding='utf-8') as concat_reader:
             d_ngrams[ngram] = d_ngrams.get(ngram, 0) + 1
 
         i += 1
+        cleaning_progressbar.update(1)
         if i % 100000 == 0:
             print('\t ', i, ' patents processed')
 print(str(n)+'-grams extracted!')
