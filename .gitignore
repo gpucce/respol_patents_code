@@ -15,7 +15,8 @@ backward_cosine/step_05_01_join_cosine_similarity_files.py
 backward_cosine/step_06_extract_n_most_similar.py
 new_comb/step_04_extract_baseline_vocabulary_of_comb_split.py
 new_word/step_80_clean_concatenated_patents_threads.py
-
+data
+config.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
