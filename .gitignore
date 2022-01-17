@@ -17,7 +17,7 @@ new_comb/step_04_extract_baseline_vocabulary_of_comb_split.py
 new_word/step_80_clean_concatenated_patents_threads.py
 data
 config.json
-elsapy*
+elsapy_data_download
 
 
 # Byte-compiled / optimized / DLL files
