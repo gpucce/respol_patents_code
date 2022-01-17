@@ -16,6 +16,9 @@
 # %%
 import requests
 import pandas as pd
+import sys
+sys.path.insert(0, "elsapy")
+
 import elsapy
 
 from elsapy.elsclient import ElsClient
@@ -25,7 +28,7 @@ from elsapy.elssearch import ElsSearch
 import json
 import os
 import os.path as osp
-import sys
+
 
 from tqdm.auto import tqdm
 
@@ -34,8 +37,9 @@ with open("config.json") as con_file:
     config = json.load(con_file)
 
 ## Initialize client
-client = ElsClient(config["apikey"])
 pubyear = sys.argv[1]
+client = ElsClient(config["apikey"], local_dir=f"data_{pubyear}")
+
 
 # %%
 extended_query = [
@@ -82,20 +86,32 @@ extended_query = ['"' + i + '"' for i in extended_query]
 
 joint_query = " OR ".join(extended_query)
 
-joint_query = f"TITLE-ABS-KEY({joint_query}) AND PUBYEAR = {pubyear}"
+joint_query = f"TITLE-ABS-KEY({joint_query}) AND PUBYEAR = 2021"
 
 # %%
 doc_srch = ElsSearch(joint_query, "scopus")
 doc_srch.execute(client, get_all=True)
 
-
 # %%
 def get_scp_id(entry):
     return int(entry["dc:identifier"].split(":")[1])
 
+def get_abs(entry):
+    return entry['item']['bibrecord']['head']['abstracts']
+
+# %%
 
 urls = [x["prism:url"] for x in doc_srch.results]
 for doc in tqdm(urls):
     abs_doc = AbsDoc(doc)
     if abs_doc.read(client):
         abs_doc.write()
+
+# %%
+docs = []
+doc_paths = [osp.join('data', i) for i in os.listdir("data")]
+for doc_path in doc_paths:
+    with open(doc_path) as doc_file:
+        abstract = json.load(doc_file)['item']['bibrecord']['head']['abstracts']
+        if abstract != None:
+            docs.append(abstract)
